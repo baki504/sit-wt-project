@@ -1,4 +1,4 @@
-package com.vogella.freemarker.first;
+package a.b.c.domain.report;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import a.b.c.domain.testscript.TestScript;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;

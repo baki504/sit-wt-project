@@ -1,4 +1,4 @@
-package com.vogella.freemarker.first;
+package a.b.c.app;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
+
+import a.b.c.app.ReportGenerator;
 
 public class ReportGeneratorTest {
 

@@ -1,4 +1,4 @@
-package com.vogella.freemarker.first;
+package a.b.c.domain.testscript;
 
 import java.util.ArrayList;
 import java.util.List;

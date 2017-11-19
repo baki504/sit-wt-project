@@ -1,4 +1,4 @@
-package com.vogella.freemarker.first;
+package a.b.c.domain.testscript;
 
 import java.io.File;
 import java.io.IOException;
