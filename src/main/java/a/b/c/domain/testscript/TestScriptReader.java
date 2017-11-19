@@ -10,7 +10,6 @@ import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -19,56 +18,63 @@ public class TestScriptReader {
 
 	private static final String TESTSCRIPT_SUFFIX = ".xlsx";
 
-	private String CASE_NAME_PREFIX = "ケース_";
+	private static final String TESTSCRIPT_SHEET_NAME = "TestScript";
 
-	private int CASE_NAME_START_INDEX = CASE_NAME_PREFIX.length();
+	private static final String CASE_NAME_PREFIX = "ケース_";
+
+	private static final int CASE_NAME_START_INDEX = CASE_NAME_PREFIX.length();
 
 	public List<TestScript> readRecursively(Path targetDir) {
 
 		List<TestScript> testScripts = new ArrayList<>();
 
-		File testScriptDir = new File(targetDir.toString());
+		File testScriptDir = targetDir.toFile();
 
 		if (!testScriptDir.exists()) {
-			return null;
+			return testScripts;
 		}
 
-		findScript(testScriptDir, testScripts);
+		read(testScriptDir, testScripts);
 
 		return testScripts;
 	}
 
-	private void findScript(File file, List<TestScript> testScripts) {
+	private void read(File targetFile, List<TestScript> testScripts) {
 
-		for (File f : file.listFiles()) {
-			if (f.isDirectory()) {
-				findScript(f, testScripts);
-			} else if (f.getName().endsWith(TESTSCRIPT_SUFFIX)) {
-				testScripts.add(new TestScript(f.getPath().replace("\\", "/"), readTestCase(f)));
+		for (File file : targetFile.listFiles()) {
+			if (file.isDirectory()) {
+				read(file, testScripts);
+			} else if (file.getName().endsWith(TESTSCRIPT_SUFFIX)) {
+				testScripts.add(readTestScript(file));
 			}
 		}
+
 	}
 
-	private List<TestCase> readTestCase(File f) {
+	private TestScript readTestScript(File file) {
+
+		String filePath = file.getPath().replace("\\", "/");
+		List<TestCase> testCases = readTestCase(file);
+
+		return new TestScript(filePath, testCases);
+	}
+
+	private List<TestCase> readTestCase(File file) {
 
 		List<TestCase> testCases = new ArrayList<>();
 
 		try {
-			Workbook workbook = WorkbookFactory.create(f);
-			Sheet sheet = workbook.getSheet("TestScript");
+			Workbook workbook = WorkbookFactory.create(file);
+			Sheet sheet = workbook.getSheet(TESTSCRIPT_SHEET_NAME);
 
-			Row scriptHeaderRow = sheet.getRow(0);
-			List<Integer> caseIndexes = readCaseIndex(sheet, scriptHeaderRow);
+			Row headerRow = sheet.getRow(0);
 
-			for (Integer i : caseIndexes) {
-				int testStep = 0;
-				int allStepCount = countStep(sheet);
-				for (int j = 1; j < allStepCount; j++) {
-					Cell cell = sheet.getRow(j).getCell(i, MissingCellPolicy.RETURN_BLANK_AS_NULL);
-					testStep = cell == null ? testStep : testStep + 1;
+			for (int i = 0; i < headerRow.getLastCellNum(); i++) {
+				String headerCellValue = headerRow.getCell(i).getStringCellValue();
+
+				if (headerCellValue.startsWith(CASE_NAME_PREFIX)) {
+					testCases.add(readCaseColumn(sheet, i));
 				}
-				testCases.add(new TestCase(
-						scriptHeaderRow.getCell(i).getStringCellValue().substring(CASE_NAME_START_INDEX), testStep));
 			}
 
 		} catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
@@ -78,27 +84,31 @@ public class TestScriptReader {
 		return testCases;
 	}
 
-	private static int countStep(Sheet sheet) {
-		int index = 1;
-		while (true) {
-			if (sheet.getRow(index) == null
-					|| sheet.getRow(index).getCell(0, MissingCellPolicy.RETURN_BLANK_AS_NULL) == null) {
-				break;
-			}
-			index++;
-		}
-		return index;
+	private TestCase readCaseColumn(Sheet sheet, int caseIndex) {
+
+		String name = extractName(sheet.getRow(0).getCell(caseIndex));
+		int stepCount = countStep(sheet, caseIndex);
+
+		return new TestCase(name, stepCount);
 	}
 
-	private List<Integer> readCaseIndex(Sheet sheet, Row scriptHeaderRow) {
 
-		List<Integer> caseIndexes = new ArrayList<>();
-		for (int i = 0; i < scriptHeaderRow.getLastCellNum(); i++) {
-			if (scriptHeaderRow.getCell(i).getStringCellValue().startsWith(CASE_NAME_PREFIX)) {
-				caseIndexes.add(i);
-			}
-		}
-		return caseIndexes;
+	private String extractName(Cell caseHeader) {
+		return caseHeader.getStringCellValue().substring(CASE_NAME_START_INDEX);
 	}
 
+	private int countStep(Sheet sheet, int caseIndex) {
+
+		int stepCount = 0;
+
+		for (int i = 1; i < sheet.getLastRowNum(); i++) {
+			String stepValue = sheet.getRow(i).getCell(caseIndex).getStringCellValue();
+
+			if (stepValue.length() > 0) {
+				stepCount++;
+			}
+		}
+
+		return stepCount;
+	}
 }
