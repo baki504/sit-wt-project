@@ -11,26 +11,32 @@
   href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
   integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
   crossorigin="anonymous">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
 </head>
 <body>
-  <h1>${title}</h1>
+  <div class="container">
+    <h1>${title}</h1>
 
-  <div class="panel panel-default">
-    <!-- Table -->
-    <table class="table">
-      <tr>
-        <th>TestScript</th>
-        <th>StepCount</th>
-      </tr>
-      <#list testScrits as script>
-      <#list script.testCases as case>
-      <tr>
-        <td>${script.filePath} case:${case.name}</td>
-        <td>${case.stepCount}</td>
-      </tr>
-      </#list>
-      </#list>
-    </table>
+    <div class="panel panel-default">
+      <!-- Table -->
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>TestScript</th>
+            <th>StepCount</th>
+          </tr>
+        </thead>
+        <#list testScrits as script>
+        <#list script.testCases as case>
+        <tr>
+          <td>${script.filePath} case:${case.name}</td>
+          <td>${case.stepCount}</td>
+        </tr>
+        </#list>
+        </#list>
+      </table>
+    </div>
 
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"

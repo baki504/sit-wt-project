@@ -1,48 +1,55 @@
 package a.b.c.domain.report;
 
-import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+
 import a.b.c.domain.testscript.TestScript;
-import freemarker.template.Configuration;
 import freemarker.template.Template;
-import freemarker.template.TemplateExceptionHandler;
-import freemarker.template.Version;
+import freemarker.template.TemplateException;
 
 public class ReportWriter {
 
-	public void write(List<TestScript> testScrits, Path reportFile) throws Exception {
+	private FreeMarkerConfiguration configuration = new FreeMarkerConfiguration();
 
-		Configuration cfg = new Configuration();
+	private ReportDir reportDir = new ReportDir();
 
-		cfg.setClassForTemplateLoading(ReportWriter.class, "/templates");
+	public void write(List<TestScript> testScrits, Path reportFile) {
 
-		cfg.setIncompatibleImprovements(new Version(2, 3, 20));
-		cfg.setDefaultEncoding("UTF-8");
-		cfg.setLocale(Locale.US);
-		cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+		if (testScrits.size() == 0) {
+			return;
+		}
 
 		Map<String, Object> input = new HashMap<String, Object>();
 		input.put("title", "TestScript Report");
 		input.put("testScrits", testScrits);
 
-		Template template = cfg.getTemplate("helloworld.ftl");
+		Template template = configuration.getTemplate();
 
-		Writer consoleWriter = new OutputStreamWriter(System.out);
-		template.process(input, consoleWriter);
-
-		Writer fileWriter = new FileWriter(new File("output.html"));
-		try {
+		try (Writer consoleWriter = new OutputStreamWriter(System.out);
+				Writer fileWriter = new FileWriter(reportFile.toFile())) {
+			template.process(input, consoleWriter);
 			template.process(input, fileWriter);
-		} finally {
-			fileWriter.close();
+
+		} catch (IOException | TemplateException e1) {
+			e1.printStackTrace();
+		}
+
+		moveToReportDir(reportFile);
+	}
+
+	private void moveToReportDir(Path reportFile) {
+		try {
+			FileUtils.moveFileToDirectory(reportFile.toFile(), reportDir.getDir(), false);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
 	}
