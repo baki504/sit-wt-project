@@ -1,11 +1,8 @@
 package a.b.c.domain.report;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import org.apache.commons.io.FileUtils;
 
@@ -13,16 +10,18 @@ public class ReportDir {
 
 	private static File dir;
 
-	private static final String REPORT_RESOURCE = "css/style.css";
+	private static final String REPORT_DIR_NAME = "report";
+
+	private static final String REPORT_RESOURCE = "report/css/style.css";
 
 	static {
-		DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-		String reportDirName = "report-" + LocalDateTime.now().format(f);
-
-		dir = new File(reportDirName);
 
 		try {
-			InputStream srcStream = ClassLoader.getSystemResourceAsStream("report/" + REPORT_RESOURCE);
+			FileUtils.deleteDirectory(new File(REPORT_DIR_NAME));
+
+			dir = new File(REPORT_DIR_NAME);
+
+			InputStream srcStream = ClassLoader.getSystemResourceAsStream(REPORT_RESOURCE);
 			File destFile = new File(dir, REPORT_RESOURCE);
 			FileUtils.copyInputStreamToFile(srcStream, destFile);
 		} catch (IOException e) {
