@@ -22,8 +22,9 @@ public class ReportDir {
 			dir = new File(REPORT_DIR_NAME);
 
 			InputStream srcStream = ClassLoader.getSystemResourceAsStream(REPORT_RESOURCE);
-			File destFile = new File(dir, REPORT_RESOURCE);
+			File destFile = new File(REPORT_RESOURCE);
 			FileUtils.copyInputStreamToFile(srcStream, destFile);
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -32,6 +33,10 @@ public class ReportDir {
 
 	public File getDir() {
 		return dir;
+	}
+
+	public String getPath() {
+		return getDir().getAbsolutePath();
 	}
 
 }

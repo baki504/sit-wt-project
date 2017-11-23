@@ -15,7 +15,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>${title}</h1>
+    <h1>${report.title}</h1>
 
     <div class="panel panel-default">
       <!-- Table -->
@@ -26,7 +26,7 @@
             <th>StepCount</th>
           </tr>
         </thead>
-        <#list testScrits as script>
+        <#list report.testScripts as script>
         <#list script.testCases as case>
         <tr>
           <td>${script.filePath} case:${case.name}</td>

@@ -1,57 +1,40 @@
 package a.b.c.domain.report;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.io.FileUtils;
 
 import a.b.c.domain.testscript.TestScript;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
+import a.b.c.infra.template.TemplateEngine;
+import a.b.c.infra.template.freemarker.TemplateEngineFreeMakerImpl;
 
 public class ReportWriter {
 
-	private FreeMarkerConfiguration configuration = new FreeMarkerConfiguration();
+	private static final String REPORT_TITLE = "TestScript Report";
 
 	private ReportDir reportDir = new ReportDir();
 
-	public void write(List<TestScript> testScrits, Path reportFile) {
+	private TemplateEngine templateEngine = new TemplateEngineFreeMakerImpl();
 
-		if (testScrits.size() == 0) {
+	public void write(List<TestScript> testScripts, Path reportFile) {
+
+		if (testScripts.isEmpty()) {
 			return;
 		}
 
-		Map<String, Object> input = new HashMap<String, Object>();
-		input.put("title", "TestScript Report");
-		input.put("testScrits", testScrits);
+		Report report = buildReport(testScripts, reportFile);
 
-		Template template = configuration.getTemplate();
+		templateEngine.write(report);
 
-		try (Writer consoleWriter = new OutputStreamWriter(System.out);
-				Writer fileWriter = new FileWriter(reportFile.toFile())) {
-			template.process(input, consoleWriter);
-			template.process(input, fileWriter);
-
-		} catch (IOException | TemplateException e1) {
-			e1.printStackTrace();
-		}
-
-		moveToReportDir(reportFile);
 	}
 
-	private void moveToReportDir(Path reportFile) {
-		try {
-			FileUtils.moveFileToDirectory(reportFile.toFile(), reportDir.getDir(), false);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	private Report buildReport(List<TestScript> testScripts, Path reportFile) {
+		Report report = new Report();
+		report.setTitle(REPORT_TITLE);
+		report.setTestScripts(testScripts);
+		report.setName(reportFile.getFileName().toString());
+		report.setOutDir(reportDir.getPath());
 
+		return report;
 	}
 
 }
