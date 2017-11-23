@@ -6,8 +6,10 @@ import java.util.List;
 import a.b.c.domain.testscript.TestScript;
 import a.b.c.infra.template.TemplateModel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class Report extends TemplateModel {
 
 	private String title;
