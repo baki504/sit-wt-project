@@ -6,6 +6,8 @@ import java.io.InputStream;
 
 import org.apache.commons.io.FileUtils;
 
+import a.b.c.infra.ReportGenerationException;
+
 public class ReportDir {
 
 	private static File dir;
@@ -26,7 +28,7 @@ public class ReportDir {
 			FileUtils.copyInputStreamToFile(srcStream, destFile);
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new ReportGenerationException(e);
 		}
 
 	}

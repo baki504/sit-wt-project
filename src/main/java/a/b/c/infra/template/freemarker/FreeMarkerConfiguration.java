@@ -2,7 +2,7 @@ package a.b.c.infra.template.freemarker;
 
 import java.io.IOException;
 
-import a.b.c.infra.UnExpectedException;
+import a.b.c.infra.ConfigurationException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
@@ -28,7 +28,7 @@ public class FreeMarkerConfiguration {
 		try {
 			template = configuration.getTemplate(path);
 		} catch (IOException e) {
-			throw new UnExpectedException(e);
+			throw new ConfigurationException(e);
 		}
 
 		return template;

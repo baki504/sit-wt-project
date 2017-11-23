@@ -13,7 +13,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import a.b.c.infra.UnExpectedException;
+import a.b.c.infra.TableDataLoadingException;
 import a.b.c.infra.tabledata.RowData;
 import a.b.c.infra.tabledata.TableData;
 
@@ -25,7 +25,7 @@ public class ExcelReader {
 		try (InputStream fis = new FileInputStream(path)) {
 			return new XSSFWorkbook(fis);
 		} catch (IOException e) {
-			throw new UnExpectedException(e);
+			throw new TableDataLoadingException(e);
 		}
 
 	}

@@ -7,7 +7,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import a.b.c.infra.UnExpectedException;
+import a.b.c.infra.ReportGenerationException;
 import a.b.c.infra.template.TemplateEngine;
 import a.b.c.infra.template.TemplateModel;
 import freemarker.core.Environment;
@@ -34,7 +34,7 @@ public class TemplateEngineFreeMakerImpl implements TemplateEngine {
 			env.setOutputEncoding(defaultEncoding);
 			env.process();
 		} catch (IOException | TemplateException e) {
-			throw new UnExpectedException(e);
+			throw new ReportGenerationException(e);
 		}
 
 	}
