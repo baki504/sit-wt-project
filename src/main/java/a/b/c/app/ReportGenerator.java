@@ -15,17 +15,20 @@ public class ReportGenerator {
 	ReportWriter writer = new ReportWriter();
 
 	public static void main(String[] args) {
-		try {
-			new ReportGenerator().generate(Paths.get("testscript"), Paths.get("report.html"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		System.exit(staticExecute());
 	}
 
-	private void generate(Path targetDir, Path reportFile) throws Exception {
+	public static int staticExecute() {
+		return new ReportGenerator().generate(Paths.get("testscript"), Paths.get("report.html"));
+	}
+
+	public int generate(Path targetDir, Path reportFile) {
+
 		List<TestScript> testScrits = reader.readRecursively(targetDir);
 
 		writer.write(testScrits, reportFile);
+
+		return 0;
 
 	}
 }

@@ -17,9 +17,11 @@ public class ReportGeneratorTest {
 	public void test() throws Exception {
 
 		// Exercise
-		ReportGenerator.main(new String[0]);
+		int result = ReportGenerator.staticExecute();
 
 		// Verify
+		assertThat(result, is(0));
+
 		List<String> actual = Files.lines(Paths.get("report/report.html"), StandardCharsets.UTF_8)
 				.collect(Collectors.toList());
 
