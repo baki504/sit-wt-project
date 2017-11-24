@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 public class TableData {
 
+	private String name;
+
 	private List<RowData> rows = new ArrayList<>();
 
 	public void add(RowData rowData) {

@@ -29,6 +29,7 @@ public class ExcelReader {
 
 	public TableData readSheet(Sheet sheet) {
 		TableData tableData = new TableData();
+		tableData.setName(sheet.getSheetName());
 
 		Row headerRow = sheet.getRow(0);
 		if (headerRow == null) {

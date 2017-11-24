@@ -17,6 +17,8 @@ public class TestScriptDao {
 
 	private static final String TESTSCRIPT_SUFFIX = ".xlsx";
 
+	private static final String TESTSCRIPT_SHEET_NAME = "TestScript";
+
 	private static final String CASE_NAME_PREFIX = "ケース_";
 
 	private TableDataDao tableDataDao = new TableDataDaoExcelImpl();
@@ -37,7 +39,7 @@ public class TestScriptDao {
 	}
 
 	private void loadScript(TestScript testScript) {
-		TableData tableData = tableDataDao.load(testScript.getFile().getAbsolutePath());
+		TableData tableData = tableDataDao.read(testScript.getFile().getAbsolutePath(), TESTSCRIPT_SHEET_NAME);
 
 		List<TestCase> testCases = readTestCase(tableData);
 

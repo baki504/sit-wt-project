@@ -2,6 +2,6 @@ package a.b.c.infra.tabledata;
 
 public interface TableDataDao {
 
-	TableData load(String path);
+	TableData read(String path, String name);
 
 }
