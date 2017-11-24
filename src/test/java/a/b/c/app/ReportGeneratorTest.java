@@ -17,7 +17,7 @@ public class ReportGeneratorTest {
 	public void test() throws Exception {
 
 		// Exercise
-		int result = ReportGenerator.staticExecute();
+		int result = new ReportGenerator().generate(Paths.get("testscript"), Paths.get("report.html"));
 
 		// Verify
 		assertThat(result, is(0));

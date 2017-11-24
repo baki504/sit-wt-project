@@ -14,21 +14,23 @@ public class ReportGenerator {
 
 	ReportWriter writer = new ReportWriter();
 
-	public static void main(String[] args) {
-		System.exit(staticExecute());
+	public static void main(String[] args) throws Exception {
+		System.exit(new ReportGenerator().generate(Paths.get("testscript"), Paths.get("report.html")));
 	}
 
-	public static int staticExecute() {
-		return new ReportGenerator().generate(Paths.get("testscript"), Paths.get("report.html"));
+	public int generate(Path targetDir, Path reportFile) throws Exception {
+		try {
+
+			List<TestScript> testScrits = reader.readRecursively(targetDir);
+
+			writer.write(testScrits, reportFile);
+
+			return 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return 1;
+		}
 	}
 
-	public int generate(Path targetDir, Path reportFile) {
-
-		List<TestScript> testScrits = reader.readRecursively(targetDir);
-
-		writer.write(testScrits, reportFile);
-
-		return 0;
-
-	}
 }
