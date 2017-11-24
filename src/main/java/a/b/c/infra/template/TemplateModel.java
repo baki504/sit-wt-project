@@ -1,6 +1,6 @@
 package a.b.c.infra.template;
 
-import org.apache.commons.io.FilenameUtils;
+import java.nio.file.Paths;
 
 import lombok.Data;
 
@@ -16,7 +16,7 @@ public class TemplateModel {
 	private String var;
 
 	public String getPath() {
-		return FilenameUtils.concat(outDir, name);
+		return Paths.get(outDir, name).toString();
 	}
 
 }
