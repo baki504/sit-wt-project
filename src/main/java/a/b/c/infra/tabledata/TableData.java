@@ -1,7 +1,6 @@
 package a.b.c.infra.tabledata;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import lombok.Data;
@@ -16,15 +15,7 @@ public class TableData {
 	}
 
 	public boolean isEmpty() {
-		return rows.isEmpty();
-	}
-
-	public List<String> getCaseNames() {
-		if (rows.isEmpty()) {
-			return Collections.emptyList();
-		}
-
-		return rows.get(0).getHeaderNames();
+		return rows == null || rows.isEmpty();
 	}
 
 }
