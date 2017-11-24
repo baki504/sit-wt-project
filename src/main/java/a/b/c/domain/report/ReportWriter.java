@@ -11,8 +11,6 @@ public class ReportWriter {
 
 	private static final String REPORT_TITLE = "TestScript Report";
 
-	private ReportDir reportDir = new ReportDir();
-
 	private TemplateEngine templateEngine = new TemplateEngineFreeMakerImpl();
 
 	public void write(List<TestScript> testScripts, Path reportFile) {
@@ -32,7 +30,7 @@ public class ReportWriter {
 		report.setTitle(REPORT_TITLE);
 		report.setTestScripts(testScripts);
 		report.setName(reportFile.getFileName().toString());
-		report.setOutDir(reportDir.getPath());
+		report.setOutDir(reportFile.toAbsolutePath().getParent().toString());
 
 		return report;
 	}
