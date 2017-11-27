@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import a.b.c.domain.testscript.TestScript;
-import a.b.c.infra.ReportGenerationException;
+import a.b.c.infra.exception.ReportGenerationException;
 import a.b.c.infra.template.TemplateEngine;
 import a.b.c.infra.template.freemarker.TemplateEngineFreeMakerImpl;
 

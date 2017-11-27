@@ -2,7 +2,7 @@ package a.b.c.infra.template.freemarker;
 
 import java.io.IOException;
 
-import a.b.c.infra.ConfigurationException;
+import a.b.c.infra.exception.ConfigurationException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;

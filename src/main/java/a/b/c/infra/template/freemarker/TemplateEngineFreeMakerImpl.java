@@ -7,7 +7,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import a.b.c.infra.ReportGenerationException;
+import a.b.c.infra.exception.ReportGenerationException;
 import a.b.c.infra.template.TemplateEngine;
 import a.b.c.infra.template.TemplateModel;
 import freemarker.core.Environment;

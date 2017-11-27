@@ -14,11 +14,11 @@ public class ReportGenerator {
 
 	ReportWriter writer = new ReportWriter();
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		System.exit(new ReportGenerator().generate(Paths.get("testscript"), Paths.get("report.html")));
 	}
 
-	public int generate(Path targetDir, Path reportFile) throws Exception {
+	public int generate(Path targetDir, Path reportFile) {
 		try {
 
 			List<TestScript> testScrits = reader.readRecursively(targetDir);

@@ -1,4 +1,4 @@
-package a.b.c.infra;
+package a.b.c.infra.exception;
 
 public class ReportGenerationException extends RuntimeException {
 
