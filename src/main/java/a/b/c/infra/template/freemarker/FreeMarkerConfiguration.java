@@ -11,12 +11,12 @@ public class FreeMarkerConfiguration {
 
 	private static final Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
 
-	private static final String REPORT_TEMPLATE_PATH = "/templates";
+	private static final String REPORT_TEMPLATE_PATH = "templates";
 
 	private static final String DEFAULT_ENCODING = "UTF-8";
 
 	static {
-		configuration.setClassForTemplateLoading(FreeMarkerConfiguration.class, REPORT_TEMPLATE_PATH);
+		configuration.setClassLoaderForTemplateLoading(ClassLoader.getSystemClassLoader(), REPORT_TEMPLATE_PATH);
 		configuration.setDefaultEncoding(DEFAULT_ENCODING);
 		configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 		configuration.setLogTemplateExceptions(false);
