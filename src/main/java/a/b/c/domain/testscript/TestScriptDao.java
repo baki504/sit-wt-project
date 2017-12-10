@@ -2,7 +2,6 @@ package a.b.c.domain.testscript;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -15,75 +14,66 @@ import a.b.c.infra.tabledata.excel.TableDataDaoExcelImpl;
 
 public class TestScriptDao {
 
-	private static final String TESTSCRIPT_SUFFIX = ".xlsx";
-
 	private static final String TESTSCRIPT_SHEET_NAME = "TestScript";
 
-	private static final String CASE_NAME_PREFIX = "ケース_";
+	private static final String TESTSCRIPT_SUFFIX = ".xlsx";
 
-	private TableDataDao tableDataDao = new TableDataDaoExcelImpl();
+	private TableDataDao excelDao = new TableDataDaoExcelImpl();
 
-	public TestScript load(File scriptFile) {
+	public TestScript load(File file) {
 		TestScript testScript = new TestScript();
-		testScript.setFile(scriptFile);
-		testScript.setFilePath(scriptFile.getPath().replaceAll("\\\\", "/"));
+		testScript.setFilePath(file.getPath().replaceAll("\\\\", "/"));
 
-		if (scriptFile.getName().endsWith(TESTSCRIPT_SUFFIX)) {
-			loadScript(testScript);
+		if (file.getName().endsWith(TESTSCRIPT_SUFFIX)) {
+			loadScript(excelDao, testScript);
 		} else {
 			return null;
+
 		}
 
 		return testScript;
 
 	}
 
-	private void loadScript(TestScript testScript) {
-		TableData tableData = tableDataDao.read(testScript.getFile().getAbsolutePath(), TESTSCRIPT_SHEET_NAME);
+	private void loadScript(TableDataDao dao, TestScript testScript) {
+		TableData tableData = dao.read(testScript.getFilePath(), TESTSCRIPT_SHEET_NAME);
 
-		List<TestCase> testCases = readTestCase(tableData);
+		List<String> caseHeaders = new ArrayList<>();
+
+		RowData firstRow = tableData.getRows().iterator().next();
+		for (Entry<String, String> row : firstRow.getData().entrySet()) {
+			if (row.getKey().startsWith(testScript.getCaseNamePrefix())) {
+				caseHeaders.add(row.getKey());
+			}
+		}
+
+		List<TestCase> testCases = new ArrayList<>();
+
+		for (String caseHeader : caseHeaders) {
+			testCases.add(loadTestCase(caseHeader, tableData, testScript.getCaseNamePrefix()));
+		}
 
 		testScript.setTestCases(testCases);
 
 	}
 
-	private List<TestCase> readTestCase(TableData tableData) {
+	private TestCase loadTestCase(String caseHeader, TableData tableData, String caseNamePrefix) {
+		TestCase testCase = new TestCase();
 
-		if (tableData.isEmpty()) {
-			return Collections.emptyList();
-		}
-
-		List<TestCase> testCases = new ArrayList<>();
-		RowData headerRow = tableData.getRows().get(0);
-
-		for (String caseName : findCaseName(headerRow)) {
-			testCases.add(readCase(tableData, caseName));
-		}
-
-		return testCases;
-	}
-
-	private List<String> findCaseName(RowData headerRow) {
-		List<String> caseNames = new ArrayList<>();
-		for (Entry<String, String> row : headerRow.getData().entrySet()) {
-			if (row.getKey().startsWith(CASE_NAME_PREFIX)) {
-				caseNames.add(row.getKey());
+		int stepCount = 0;
+		for (RowData rowData : tableData.getRows()) {
+			for (Entry<String, String> entry : rowData.getData().entrySet()) {
+				if (entry.getKey().equals(caseHeader) && StringUtils.isNotEmpty(entry.getValue())) {
+					stepCount++;
+				}
 			}
 		}
+		
+		testCase.setName(StringUtils.substringAfter(caseHeader, caseNamePrefix));
+		testCase.setStepCount(stepCount);
 
-		return caseNames;
-	}
+		return testCase;
 
-	private TestCase readCase(TableData tableData, String caseName) {
-		String name = caseName.substring(CASE_NAME_PREFIX.length());
-		int stepCount = 0;
-
-		for (RowData rowData : tableData.getRows()) {
-			String cellValue = rowData.getData().get(caseName);
-			stepCount = StringUtils.isEmpty(cellValue) ? stepCount : stepCount + 1;
-		}
-
-		return new TestCase(name, stepCount);
 	}
 
 }
