@@ -20,4 +20,8 @@ public class TableData {
 		return rows == null || rows.isEmpty();
 	}
 
+	public RowData getHeaderRow() {
+		return isEmpty() ? new RowData() : rows.iterator().next();
+	}
+
 }

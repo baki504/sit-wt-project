@@ -1,23 +1,25 @@
 package a.b.c.domain.testscript;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@AllArgsConstructor
 public class TestScript {
 
-	private static final String CASE_NAME_PREFIX = "ケース_";
-
-	private String filePath;
+	private File file;
 
 	private List<TestCase> testCases = new ArrayList<>();
 
-	public String getCaseNamePrefix() {
-		return CASE_NAME_PREFIX;
+	public String getFilePath() {
+		String filePath[] = StringUtils.split(file.getPath(), File.separator);
+		return filePath == null ? StringUtils.EMPTY : StringUtils.join(filePath, "/");
 	}
 
 }

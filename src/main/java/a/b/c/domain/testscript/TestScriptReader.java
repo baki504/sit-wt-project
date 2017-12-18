@@ -37,7 +37,7 @@ public class TestScriptReader {
 	}
 
 	private void readScript(File file, List<TestScript> testScripts) {
-		TestScript testScript = testScriptDao.load(file);
+		TestScript testScript = testScriptDao.read(file);
 
 		if (testScript == null) {
 			return;
